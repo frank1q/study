@@ -1,0 +1,12 @@
+http://blog.csdn.net/ruby97/article/details/8868197
+
+
+如果安装phpunit出现
+No releases available for package "pear.phpunit.de/PHPUnit"
+install failed
+
+
+则
+pear clear-cache 
+
+pear install --alldeps --force phpunit/PHPUnit 

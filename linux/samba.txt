@@ -1,0 +1,50 @@
+一．检查是否安装samba客户端和服务器端：
+1. 检查：
+[root@localhost ~]# rpm -qa|grep samba
+samba-3.0.23c-2       -----服务器端
+samba-client-3.0.23c-2        -----客户端端
+samba-common-3.0.23c-2
+RHEL5默认只安装了客户端。
+2. 安装：
+可以在安装盘的第二张光盘Server下找到服务器端安装:
+rpm -ivh /mnt/Server/samba-3.0.23c-2.i386.rpm 
+然后启动samba服务：
+输入 ntsysv
+在界面中空格选中smb 服务，确认离开。
+3.关闭selinux：
+直接修改/etc/sysconfig/selinux
+selinux=disable
+重启系统生效。
+
+注意防火墙：
+iptables
+
+
+
+二．Samba基础：
+Samba服务的主配置文件：/etc/samba/smb.conf
+Samba服务的密码文件：/etc/samba/smbpasswd
+Samba服务的日志文件：/var/log/samba/*.log
+Samba共享文件夹的权限是靠samba配置文件和liunux系统的文件夹权限共同控制的。配置的时候一定要注意。
+
+
+三、配置目录
+
+vi	/etc/samba/smb.conf
+
+增加
+[web]
+	path=/var/www/html
+	writable=yes
+	browerable=yes
+
+
+增加samba用户：
+smbpasswd -a apache
+
+给目录和文件增加权限
+setfacl -m d:u:apache:rwx -R /var/www/html/
+setfacl -m u:apache:rwx -R /var/www/html/
+
+在win7下增加映射网络驱功
+
