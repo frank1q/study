@@ -1,0 +1,11 @@
+phpize
+如没有这个命令，则安装
+php-devel
+
+./configure [--enable-redis-igbinary]
+make && make install
+
+
+配置php.ini
+
+extension=redis.so
