@@ -1,0 +1,71 @@
+$ wget http://download.redis.io/releases/redis-2.8.9.tar.gz
+$ tar xzf redis-2.8.9.tar.gz
+$ cd redis-2.8.9
+$ make
+
+
+如果报错：
+zmalloc.o: In function `zmalloc_used_memory':
+/var/www/html/redis-2.8.9/src/zmalloc.c:223: undefined reference to `__sync_add_and_fetch_4'
+
+
+先找出CPU的是i386 还是 i686的
+uname -m
+
+然后明确的声明 CPU 类型
+export CFLAGS=-march=i686
+make distclean
+make
+
+为了便于管理
+安装完成之后把配置文件和主文件移动到管理目录
+mkdir -p /usr/local/redis/bin
+mkdir -p /usr/local/redis/etc
+mv /var/www/html/redis-2.8.9/redis.conf  /usr/local/redis/etc/
+mv mkreleasehdr.sh redis-benchmark redis-check-aof redis-check-d
+ump redis-cli redis-server /usr/local/redis/bin/
+
+
+
+
+启动后台
+/usr/local/redis/bin/redis-server /usr/local/redis/etc/redis.conf
+关闭
+pkill redis-server
+
+登陆前台：
+/usr/local/redis/bin/redis-cli	（无密码）
+/usr/local/redis/bin/redis-cli   -a 123456(有密码）
+
+查看是否启动成功
+
+ps -ef | grep redis
+root      9431     1  0 03:09 ?        00:00:00 /usr/local/redis/bin/redis-server *:6379                         
+root      9452  2450  0 03:13 pts/2    00:00:00 grep redis
+
+查看端口
+netstat -tunpl | grep 6379
+
+
+配置：
+配置文件：/usr/local/redis/etc/redis.conf
+支持后台运行：daemonize yes
+
+修改密码：增加requirepass 123456
+
+主从
+slaveof 10.88.88.141(主redis地址）  6379(端口）
+masterauth   123456(配置主redis密码）
+
+持久化
+snapshotting（快照）默认（二进制文件）
+append-only file(缩写aof)（记录增，删，改）
+
+appendonly yes
+appendfsync always		总是
+#appendfsync everysec		每秒
+# appendfsync no		依赖os
+
+
+
+
