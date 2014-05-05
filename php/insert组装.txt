@@ -1,0 +1,41 @@
+    /**
+     *  获取插入的数据SQL
+     *
+     *  @author Garbin
+     *  @param  array $data
+     *  @return string
+     */
+    function _getInsertInfo($data)
+    {
+        $fields = array();
+        $values = array();
+        $length = 1;
+        if (key($data) === 0 && is_array($data[0]))
+        {
+            $length = count($data);
+            foreach ($data as $_k => $_v)
+            {
+                foreach ($_v as $_f => $_fv)
+                {
+                    $is_array = is_array($_fv);
+                    ($_k == 0 && !$is_array) && $fields[] = $_f;
+                    !$is_array && $values[$_k][] = "'{$_fv}'";
+                }
+                $values[$_k] = '(' . implode(',', $values[$_k]) . ')';
+            }
+        }
+        else
+        {
+            foreach ($data as $_k => $_v)
+            {
+                $is_array = is_array($_v);
+                !$is_array && $fields[] = $_k;
+                !$is_array && $values[] = "'{$_v}'";
+            }
+            $values = '(' . implode(',', $values) . ')';
+        }
+        $fields = '(' . implode(',', $fields) . ')';
+        is_array($values) && $values = implode(',', $values);
+
+        return compact('fields', 'values', 'length');
+    }
